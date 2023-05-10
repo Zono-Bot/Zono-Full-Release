@@ -1,0 +1,5 @@
+2022-04-30 07:04:32,961:DEBUG:discord.client: on_message has successfully been registered as an event
+2022-04-30 07:04:32,961:DEBUG:discord.client: on_ready has successfully been registered as an event
+2022-04-30 07:04:32,963:INFO:discord.client: logging in using static token
+2022-04-30 07:04:32,963:INFO:discord.client: Cleaning up tasks.
+2022-04-30 07:04:32,964:INFO:discord.client: Closing the event loop.
