@@ -119,3 +119,7 @@ requiredFiles = [".replit", "replit.nix", ".config", "venv"]
 ```
 
 Once done, you may run the bot. If there are any errors, please get in contact with me on our Discord server, Zono Hub.
+
+
+# 24/7 Uptime
+To keep the bot online 24/7, use a uptime monitor service like UptimeRobot.
