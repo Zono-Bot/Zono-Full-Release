@@ -1,4 +1,4 @@
-print("Booting up...")
+print("Booting up Zono Full Release Github Version - vPublic...")
 
 # Modules
 from discord.ext import commands, tasks
@@ -1356,8 +1356,102 @@ async def report(ctx, *, report=None):
     if response.status_code == 204:
         await ctx.send(embed=embed)
     else:
-        await ctx.send(f"{error_emoji} Error sending report: {response.status_code}")
+        await ctx.send(f"{error_emoji} Error sending report: {response.status_code}
+        
+@bot.command(name="lockdown")
+@commands.has_permissions(manage_channels=True)
+async def lockdown(ctx, channel: discord.TextChannel = None):
+    if channel is None:
+        channel = ctx.channel
 
+    await channel.set_permissions(ctx.guild.default_role, send_messages=False)
+
+    embed = discord.Embed(
+        title="Channel Lockdown",
+        description="This channel has been put on lockdown. Check back later.",
+        color=discord.Color.red()
+    )
+
+    await channel.send(embed=embed)
+
+
+@bot.command(name="unlockdown")
+@commands.has_permissions(manage_channels=True)
+async def unlockdown(ctx, channel: discord.TextChannel = None):
+    if channel is None:
+        channel = ctx.channel
+
+    await channel.set_permissions(ctx.guild.default_role, send_messages=True)
+
+    embed = discord.Embed(
+        title="Channel Unlocked",
+        description="This channel is no longer under lockdown. You can resume normal activity.",
+        color=discord.Color.green()
+    )
+
+    await channel.send(embed=embed)
+  
+@bot.command()
+async def law(ctx):
+    embed = discord.Embed(title="Error")   
+    embed.set_image(url="https://media.discordapp.net/attachments/1107036001827831858/1107036043414347836/1A8F0822-8806-411F-8A03-E76D2894E3F8-2.jpg?width=1898&height=1068")
+    await ctx.send(embed=embed)
+#    response = requests.get('https://www.jalpa-api.ga/api/v1/law')
+    
+#    try:
+#        data = response.json()
+#        # Process the data or send it as a message
+#        await ctx.send(data)
+#    except ValueError:
+ #       await ctx.send("An error occurred while fetching law data.")
+  
+
+@bot.command(name="NPM")
+async def npm_command(ctx, package_name):
+    response = requests.get(f"https://hunterapi.tk/api/npm?package={package_name.lower()}")
+    data = response.json()
+    
+    name = data.get("name")
+    version = data.get("version")
+    downloads = data.get("downloads")
+    last_update = data.get("last_update")
+    author = data.get("author")
+    description = data.get("description")
+    
+    embed = discord.Embed(title=name, description=description, color=discord.Color.blue())
+    embed.add_field(name="Version", value=version)
+    embed.add_field(name="Downloads", value=downloads)
+    embed.add_field(name="Last Update", value=last_update)
+    embed.add_field(name="Author", value=author)
+    
+    await ctx.send(embed=embed)
+        
+@bot.command(name="ban")
+@commands.has_permissions(ban_members=True)
+async def ban_command(ctx, member: discord.Member, *, reason: str):
+    if member == ctx.author:
+        await ctx.send(f"{error_emoji} You cannot ban yourself.")
+        return
+
+    if member == bot.user:
+        await ctx.send(f"{error_emoji} I cannot ban myself.")
+        return
+
+    try:
+        await member.send(f"You have been banned in the server **{ctx.guild.name}** by {ctx.author.name} with the reason  **{reason}**.")
+        await member.ban(reason=reason)
+        await ctx.send(f"{success_emoji} {member.mention} has been banned for {reason}.")
+    except discord.Forbidden:
+        await ctx.send(f"{error_emoji} I don't have the necessary permissions to ban that user.")
+
+@bot.command()
+async def memegen(ctx, line1, line2, line3, line4):
+    meme_url = f"https://apimeme.com/meme?meme=Actual-Advice-Mallard&top={line1}+{line2}&bottom={line3}+{line4}"
+    
+    embed = discord.Embed(description="Here is your meme")
+    embed.set_image(url=meme_url)
+    
+    await ctx.send(embed=embed)
 
 import keep_alive #don't forget to import the file!
 keep_alive.keep_alive()
