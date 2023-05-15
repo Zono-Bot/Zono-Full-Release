@@ -121,5 +121,16 @@ requiredFiles = [".replit", "replit.nix", ".config", "venv"]
 Once done, you may run the bot. If there are any errors, please get in contact with me on our Discord server, Zono Hub.
 
 
-# 24/7 Uptime
-To keep the bot online 24/7, use a uptime monitor service like UptimeRobot.
+## 24/7 Uptime
+To keep the bot online 24/7, use an uptime monitor service like UptimeRobot. UptimeRobot allows you to monitor your bot's availability and sends requests periodically to keep it active. Here's how you can set it up:
+
+1. Go to [UptimeRobot](https://uptimerobot.com/) and sign up for an account.
+2. After signing up, click on "Add New Monitor" to create a new monitor.
+3. Select the "HTTP(s)" monitor type.
+4. Set the monitor settings:
+   - Friendly Name: Enter a name for your bot.
+   - URL (or IP): Enter the URL where your bot is hosted.
+   - Monitoring Interval: Choose an interval (e.g., every 5 minutes) for UptimeRobot to send requests to your bot.
+5. Click on "Create Monitor" to save the settings.
+6. UptimeRobot will now periodically send requests to your bot, helping to keep it online.
+** If there is an error, join our [Discord Server](https://discord.gg/BJDVEwAnjv) and visit the #code-help forums channel. **
