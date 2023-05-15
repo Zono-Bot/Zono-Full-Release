@@ -1,5 +1,5 @@
 # Zono-Full-Release
-This is the full release of Zono on github here! Look below on how to start the bot.
+This is the full release of Zono on github here! Look below for information on how to start the bot.
 
 # Hosting
 Want to host this bot? Download all files and upload them onto https://replit.com. Then go on the project **Secrets** tab. On that tab, add a new secret named "DiscordToken" and set the value to the token of you bot. Then open your **.replit** file and make sure it looks like this:
