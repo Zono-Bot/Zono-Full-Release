@@ -118,6 +118,7 @@ ignoredPackages = ["unit_tests"]
 requiredFiles = [".replit", "replit.nix", ".config", "venv"]
 ```
 
+Make sure in your REPLIT's Secrets, you have a secret named "DiscordToken" and set the value to your bots token.
 Once done, you may run the bot. If there are any errors, please get in contact with me on our Discord server, Zono Hub.
 
 
