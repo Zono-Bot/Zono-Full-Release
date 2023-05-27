@@ -4,12 +4,14 @@ print("Booting up Zono Full Release Github Version - vPublic...")
 # Modules
 from discord.ext import commands, tasks
 import discord
+from discord import app_commands
 import sys
 import os
 import asyncio
 import random
 import psutil
 import platform
+
 # Do not modify the below statement, this is
 # to check whether this REPL has been forked
 # or not. Feel free to remove these checks if
