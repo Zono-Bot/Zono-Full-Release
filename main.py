@@ -1453,7 +1453,312 @@ async def memegen(ctx, line1, line2, line3, line4):
     embed.set_image(url=meme_url)
     
     await ctx.send(embed=embed)
+                       
+# The following lines of code of a command have been removed.
+# The following lines of code of a command have been removed.
+# The following lines of code of a command have been removed.
 
+@bot.tree.command(name="google", description="Searches Google for a query.")
+@app_commands.describe(query = "what to search for")
+async def google(ctx: discord.Interaction, query: str):
+    if query:
+        search_query = query.lower().replace(" ", "+")
+        search_url = f"https://www.google.com/search?q={search_query}"
+        embed = discord.Embed(title=f"Google Search: {query}", description=f"Here's the Google search result for '{query}':", color=discord.Color.blue())
+        embed.add_field(name="Search URL", value=search_url)
+        await ctx.response.send_message(embed=embed)
+    else:
+        await ctx.response.send_message("Please provide a query.")
+
+@bot.tree.command(name="ping", description="Check the bot's latency.")
+async def ping(ctx: discord.Interaction):
+    latency = round(bot.latency * 1000, 2)
+    await ctx.response.send_message(f"Pong! Latency: {latency}ms")
+
+@bot.tree.command(name="userinfo", description="Get information about a user.")
+@app_commands.describe(user="The user to get information about.")
+async def userinfo(ctx: discord.Interaction, user: discord.Member = None):
+    if not user:
+        user = ctx.author
+
+    embed = discord.Embed(title="User Information", color=user.color)
+    embed.set_thumbnail(url=user.avatar_url)
+    embed.add_field(name="Username", value=user.name, inline=True)
+    embed.add_field(name="Discriminator", value=user.discriminator, inline=True)
+    embed.add_field(name="ID", value=user.id, inline=True)
+    embed.add_field(name="Created At", value=user.created_at.strftime("%Y-%m-%d %H:%M:%S"), inline=True)
+    embed.add_field(name="Joined At", value=user.joined_at.strftime("%Y-%m-%d %H:%M:%S"), inline=True)
+    embed.add_field(name="Roles", value=", ".join(role.name for role in user.roles[1:]), inline=False)
+
+    await ctx.response.send_message(embed=embed)
+
+@bot.tree.command(name="uptime", description="Get the bot's uptime.")
+@app_commands.describe()
+async def uptime(ctx: discord.Interaction):
+    current_time = datetime.datetime.now()
+    uptime = current_time - bot.start_time
+    days, remainder = divmod(uptime.total_seconds(), 86400)
+    hours, remainder = divmod(remainder, 3600)
+    minutes, seconds = divmod(remainder, 60)
+
+    embed = discord.Embed(title="Bot Uptime", color=discord.Color.green())
+    embed.add_field(name="Days", value=int(days), inline=True)
+    embed.add_field(name="Hours", value=int(hours), inline=True)
+    embed.add_field(name="Minutes", value=int(minutes), inline=True)
+    embed.add_field(name="Seconds", value=int(seconds), inline=True)
+
+    await ctx.response.send_message(embed=embed)
+
+
+@bot.tree.command(name="lockdown", description="Put a channel on lockdown.")
+@app_commands.describe(channel="The channel to lock down")
+async def lockdown(ctx: discord.Interaction, channel: discord.TextChannel = None):
+    if channel is None:
+        channel = ctx.channel
+
+    await channel.set_permissions(ctx.guild.default_role, send_messages=False)
+
+    embed = discord.Embed(
+        title="Channel Lockdown",
+        description="This channel has been put on lockdown. Check back later.",
+        color=discord.Color.red()
+    )
+
+    await channel.send(embed=embed)
+    await ctx.response.send_message("Channel set on lockdown!")
+
+@bot.tree.command(name="unlockdown", description="Unlock a previously locked channel.")
+@app_commands.describe(channel="The channel to unlock")
+async def unlockdown(ctx: discord.Interaction, channel: discord.TextChannel = None):
+    if channel is None:
+        channel = ctx.channel
+
+    await channel.set_permissions(ctx.guild.default_role, send_messages=True)
+
+    embed = discord.Embed(
+        title="Channel Unlocked",
+        description="This channel is no longer under lockdown. You can resume normal activity.",
+        color=discord.Color.green()
+    )
+
+    await channel.send(embed=embed)
+    await ctx.response.send_message("Removed lockdown!")
+                       
+# The following lines of code of a command have been removed.
+# The following lines of code of a command have been removed.
+# The following lines of code of a command have been removed.
+
+@bot.tree.command(name="rps", description="Play Rock, Paper, Scissors.")
+@app_commands.describe(choice="Your move: rock, paper, or scissors")
+async def rps(ctx: discord.Interaction, choice: str = None):
+    emojis = {
+        'rock': '🪨',
+        'paper': '📄',
+        'scissors': '✂️'
+    }
+    
+    if choice is None:
+        await ctx.response.send_message("What's your move??")
+        return
+    
+    valid_options = ['rock', 'paper', 'scissors']
+    if choice.lower() not in valid_options:
+        await ctx.response.send_message("Invalid choice. Choose either 'rock', 'paper', or 'scissors'.")
+        return
+    
+    bot_choice = random.choice(valid_options)
+    result = None
+    
+    if choice.lower() == bot_choice:
+        result = 'tie'
+    elif choice.lower() == 'rock' and bot_choice == 'scissors':
+        result = 'user'
+    elif choice.lower() == 'paper' and bot_choice == 'rock':
+        result = 'user'
+    elif choice.lower() == 'scissors' and bot_choice == 'paper':
+        result = 'user'
+    else:
+        result = 'bot'
+    
+    response = f"You choose {emojis.get(choice.lower(), '`invalid choice`')}\n"
+    response += f"I choose {emojis.get(bot_choice)}\n\n"
+    
+    if result == 'tie':
+        response += 'It\'s a tie!'
+    elif result == 'user':
+        response += f'{emojis.get(choice.lower())} wins!'
+    else:
+        response += f'{emojis.get(bot_choice)} wins!'
+    
+    await ctx.response.send_message(response)
+
+@bot.tree.command(name="forms", description="Create a form embed")
+@app_commands.describe(form_url="The URL of the form", timeout="Timeout in seconds (default: 60)")
+async def forms(ctx: discord.Interaction, form_url: str, timeout: int = 60):
+        def check(m):
+            return m.author == ctx.author and m.channel == ctx.channel
+        
+        try:
+            # Check if the URL is safe
+            if not is_url_safe(form_url):
+                raise ValueError("<:error:1093315720626057299> An error occurred. That URL might possibly not be one of the following: ```" + ", ".join(ALLOWED_DOMAINS) + "```")
+            
+            # Create the embed and button
+            embed = discord.Embed(title="Discord Forms", description="Click the button below to fill out the form!", color=discord.Color.red())
+            message = await ctx.response.send_message(embed=embed, view=discord.ui.View(timeout=timeout))
+            button = discord.ui.Button(style=discord.ButtonStyle.green, label="Open Form", url=form_url)
+            view = discord.ui.View()
+            view.add_item(button)
+            await message.edit(view=view)
+    
+            # Wait for a response from the user
+            await bot.wait_for('message', check=check, timeout=timeout)
+        except asyncio.TimeoutError:
+            await message.edit(view=None)
+            await ctx.response.send_message("Timed out!")
+        except ValueError as e:
+            await ctx.response.send_message(str(e))
+        except:
+            await ctx.response.send_message("<:error:1093315720626057299> An error occurred. That URL might possibly not be one of the following: ```" + ", ".join(ALLOWED_DOMAINS) + "```")
+
+def is_url_safe(url):
+    # Check if the URL starts with "http", "https", or "discord"
+    if not url.startswith(tuple(DISCORD_DOMAINS)):
+        return False
+        
+    # Check if the URL contains an allowed domain
+    for domain in ALLOWED_DOMAINS:
+        if domain in url:
+            return True
+        
+    # Return False if the URL does not contain an allowed domain
+    return False
+
+# Check if user has the 'administrator' permission before allowing them to use the warn command
+
+def is_admin(ctx):
+    return ctx.author.guild_permissions.administrator
+
+if os.path.exists("warnings.json"):
+    with open("warnings.json") as f:
+        warnings = json.load(f)
+else:
+    warnings = {}
+
+# Save warning counts to file whenever they are updated
+def save_warnings():
+    with open("warnings.json", "w") as f:
+        json.dump(warnings, f)
+
+@bot.tree.command(name="warn", description="Give a warning to a member")
+@app_commands.describe(member="The member to warn", reason="The reason for the warning")
+@app_commands.check(is_admin)
+async def warn(ctx: discord.Interaction, member: discord.Member, reason: str):
+    if str(ctx.author.id) in banned_users:
+        await ctx.response.send_message("<:error:1093315720626057299> You are blocked from using our system!")
+    else:
+        if member.id == ctx.author.id:
+            await ctx.response.send_message(f"{error_emoji} You cannot warn yourself.")
+            return
+
+        if member.id == bot.user.id:
+            await ctx.response.send_message(f"{error_emoji} I cannot warn myself.")
+            return
+
+        if str(member.guild.id) not in warnings:
+            warnings[str(member.guild.id)] = {}
+
+        if str(member.id) not in warnings[str(member.guild.id)]:
+            warnings[str(member.guild.id)][str(member.id)] = 0
+
+        warnings[str(member.guild.id)][str(member.id)] += 1
+        save_warnings()
+
+        try:
+            await member.send(f"<:locked:1095311711814299648> Greetings, {member.name}. You have been warned in the server **{ctx.guild.name}**. The reason is **{reason}**.")
+        except discord.errors.HTTPException:
+            await ctx.response.send_message(f"{error_emoji} I cannot DM that user. The warning still has been given, though!")
+
+        await ctx.response.send_message(f"{success_emoji} {member.mention} has been warned for **{reason}**. They now have **{warnings[str(member.guild.id)][str(member.id)]}** warnings.")
+
+@bot.tree.command(name="checkwarns", description="Check the number of warnings for a member")
+async def checkwarns(ctx: discord.Interaction, member: discord.Member = None):
+    if not member:
+        member = ctx.author
+
+    if member.id == bot.user.id:
+        await ctx.response.send_message(f"{error_emoji} I don't have any warnings.")
+
+    elif str(member.guild.id) in warnings and str(member.id) in warnings[str(member.guild.id)]:
+        await ctx.response.send_message(f"{member.display_name} has **{warnings[str(member.guild.id)][str(member.id)]}** warnings.")
+
+    else:
+        await ctx.response.send_message(f"{member.display_name} has no warnings.")
+
+@bot.tree.command(name="clearwarns", description="Clear the warnings of a member")
+@app_commands.describe(member="The member to clear the warnings for")
+@app_commands.check(is_admin)
+async def clearwarns(ctx: discord.Interaction, member: discord.Member):
+    if str(ctx.author.id) in banned_users:
+        await ctx.response.send_message("<:error:1093315720626057299> You are blocked from using our system!")
+    else:
+        if str(member.guild.id) in warnings and str(member.id) in warnings[str(member.guild.id)]:
+            warnings[str(member.guild.id)].pop(str(member.id))
+            save_warnings()
+            await ctx.response.send_message(f"{success_emoji} {member.display_name}'s warnings have been cleared.")
+        try:
+            await member.send(f":tada: Greetings, {member.name}. Your warnings have been cleared in the server **{ctx.guild.name}**")
+        except discord.errors.HTTPException:
+            await ctx.response.send_message(f"{error_emoji} I cannot DM that user. The warning still has been given, though!")
+
+        else:
+            await ctx.response.send_message(f"{error_emoji} {member.display_name} has no warnings to clear, or this bot is just misunderstanding.")
+
+import requests
+
+@bot.tree.command(name="password", description="Generate a random password")
+@app_commands.describe(length="The length of the password", complexity="The complexity of the password")
+async def password(ctx: discord.Interaction, length: int = 16, complexity: str = "medium"):
+    response = requests.get('https://zono-hub-api.vnutri-mira-rob.repl.co/password',
+                            params={'length': length, 'complexity': complexity, 'key': 'ur-key-here'})
+    if response.status_code == 200:
+        data = response.json()
+        password = data['password']
+        if length == 16 and complexity == "medium":
+            await ctx.response.send_message(f"Generated password: ||{password}||\n:warning: Note: Using default length and complexity.")
+        else:
+            await ctx.response.send_message(f"Generated password: ||{password}||")
+    else:
+        await ctx.response.send_message("Failed to generate password. Please try again later.")
+
+@bot.tree.command(name="kick", description="Kick a user from the server")
+@app_commands.describe(member="The user to kick", reason="The reason for the kick")
+async def kick(ctx: discord.Interaction, member: discord.Member, reason: str):
+        try:
+            await member.kick(reason=reason)
+            await ctx.response.send_message(f"{member.mention} has been kicked.")
+            try:
+                await member.send(f"You have been kicked from the server called **{ctx.guild.name}** with the reason **{reason}.")
+            except discord.Forbidden:
+                await ctx.response.send_message("I can't DM that user. The user was still kicked, though!")
+        except discord.Forbidden:
+            await ctx.response.send_message("I need the **Administrator** permissions to do that.")
+
+@bot.tree.command(name="ban", description="Ban a user from the server")
+@app_commands.describe(member="The user to ban", reason="The reason for the ban")
+async def ban(ctx: discord.Interaction, member: discord.Member, reason: str):
+        try:
+            await member.ban(reason=reason)
+            await ctx.response.send_message(f"{member.mention} has been banned.")
+            try:
+                await member.send(f"You have been banned from the server called **{ctx.guild.name}** with the reason **{reason}.")
+            except discord.Forbidden:
+                await ctx.response.send_message("I can't DM that user. The user was still banned, though!")
+        except discord.Forbidden:
+            await ctx.response.send_message("I need the **Administrator** permissions to do that.")
+
+
+                       
 import keep_alive #don't forget to import the file!
 keep_alive.keep_alive()
 
