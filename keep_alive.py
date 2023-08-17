@@ -1,3 +1,5 @@
+print("\033[95mkeep_alive.py;\033[0m Booting Up")
+
 from flask import Flask
 from threading import Thread
 
